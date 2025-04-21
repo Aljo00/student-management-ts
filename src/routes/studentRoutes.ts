@@ -9,7 +9,7 @@ router.get("/students", async (req, res) => {
     const students = await StudentService.getAllStudents();
     res.render("students", { students });
   } catch (err) {
-    res.status(500).send("Error fetching students");
+    res.status(500).json({ error: "Error fetching students" });
   }
 });
 
@@ -19,13 +19,21 @@ router.post("/students", async (req, res) => {
     const { name, age, course, department } = req.body;
     const student = await StudentService.createStudent({
       name,
-      age,
+      age: parseInt(age),
       course,
       department,
     });
-    res.redirect("/students");
+    if (req.headers["content-type"] === "application/json") {
+      res.status(201).json(student);
+    } else {
+      res.redirect("/students");
+    }
   } catch (err) {
-    res.status(500).send("Error creating student");
+    if (req.headers["content-type"] === "application/json") {
+      res.status(500).json({ error: "Error creating student" });
+    } else {
+      res.status(500).send("Error creating student");
+    }
   }
 });
 

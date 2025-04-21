@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import pool from "./db/db";
-
 import studentRoutes from "./routes/studentRoutes";
 
 const app = express();
@@ -20,18 +19,10 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "..", "src", "public")));
 
+// Routes
 app.use("/", studentRoutes);
-
-// Set view engine
-app.set('view engine', 'ejs');
-app.set('views', './src/views');
-
-// Test route
-app.get("/", (req, res) => {
-  res.send("🎓 Student Management System is running!");
-});
 
 // Server
 app.listen(PORT, () => {
